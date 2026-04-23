@@ -1,0 +1,318 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Page */
+body {
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Title */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+  color: #7dd3fc;
+  text-shadow: 0 0 10px rgba(125, 211, 252, 0.4);
+}
+
+/* Checkbox */
+#showForces {
+  margin-bottom: 15px;
+  transform: scale(1.2);
+  accent-color: #38bdf8;
+}
+
+/* Canvas */
+canvas {
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  width: 20vmin;
+  height: 20vmin;
+}
+
+/* Controls panel */
+#controls {
+  width: 320px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 15px;
+  border-radius: 16px;
+
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Labels */
+label {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+  color: #94a3b8;
+}
+
+/* Value text */
+label span {
+  float: right;
+  color: #38bdf8;
+  font-weight: bold;
+}
+
+/* Sliders */
+input[type='range'] {
+  width: 100%;
+  margin-top: 5px;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: #1e293b;
+  outline: none;
+}
+
+/* Slider thumb */
+input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #38bdf8;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+}
+
+/* Firefox */
+input[type='range']::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #38bdf8;
+  cursor: pointer;
+}
+
+/* Lipid count text */
+p {
+  font-size: 0.9rem;
+  color: #cbd5f5;
+}
+
+/* Scrollbar (nice touch) */
+#controls::-webkit-scrollbar {
+  width: 6px;
+}
+
+#controls::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.4);
+  border-radius: 10px;
+}
+
+/* Container holds the canvas */
+#simContainer {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+}
+
+#titleDiv {
+  position: absolute;
+  top: 20px; /* Distance from top of canvas */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%);
+  color: #7dd3fc;
+  font-size: 2rem;
+  text-shadow: 0 0 10px rgba(125, 211, 252, 0.4);
+  text-align: center;
+
+  background: rgba(15, 23, 42, 0.6); /* Semi-transparent dark background */
+  backdrop-filter: blur(1px); /* Blur canvas behind it */
+  padding: 10px 20px 0px;
+  border-radius: 12px;
+
+  pointer-events: none; /* Let clicks pass through */
+  z-index: 200; /* Above canvas */
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Base controls panel */
+#controls {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 16px 16px 0;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(1px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 5px 0 30px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease;
+  z-index: 100;
+}
+
+/* Header with toggle button */
+.controlsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background: rgba(2, 6, 23, 0.8);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+}
+
+/* Toggle button */
+#toggleControls {
+  background: #1e293b;
+  border-radius: 8px;
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.headerText {
+  text-align: left;
+}
+
+/* Sliders/content container */
+.controlsContent {
+  padding: 10px;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+/* COLLAPSED: slide panel offscreen, leaving only toggle button visible */
+#controls.collapsed {
+  width: min-content;
+}
+
+/* Hide content when collapsed */
+#controls.collapsed .controlsContent {
+  display: none;
+}
+
+/* Hide header text when collapsed but keep toggle button visible */
+#controls.collapsed .controlsHeader .headerText {
+  display: none;
+}
+
+#infoPanel {
+  position: absolute;
+  bottom: 20px; /* Distance from bottom of canvas */
+  right: 20px; /* Distance from right of canvas */
+  background: rgba(15, 23, 42, 0.6); /* Semi-transparent backdrop */
+  backdrop-filter: blur(1px);
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  z-index: 150; /* Above canvas but below title */
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.9rem;
+}
+
+/* Checkbox styling inside the panel */
+#infoPanel input[type='checkbox'] {
+  transform: scale(1.2);
+  accent-color: #38bdf8;
+  margin-right: 5px;
+}
+
+/* Lipid count span */
+#infoPanel span {
+  color: #38bdf8;
+  font-weight: bold;
+}
+
+/* Shared panel style (matches your info labels) */
+.panel {
+  position: absolute;
+  right: 20px;
+  top: 120px; /* adjust if needed to sit under your other UI */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: sans-serif;
+}
+
+/* Title */
+.panel-title {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Buttons */
+#drawControls button {
+  display: block;
+  width: 100%;
+  margin: 4px 0;
+  padding: 6px 8px;
+
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: 6px;
+
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: white;
+}
+
+/* Hover */
+#drawControls button:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* Active state */
+#drawControls button.active {
+  background: #4caf50;
+  color: white;
+}
+
+/* Position it on the right, aligned with your UI */
+#drawControls {
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(1px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 5px 0 30px rgba(0, 0, 0, 0.6);
+  position: absolute;
+  right: 20px;
+  top: 140px; /* adjust so it sits under your main controls */
+}
+
+/* Make buttons match existing UI spacing */
+#drawControls button {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+}
