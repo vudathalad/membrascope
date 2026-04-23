@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MembraScope</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="simContainer">
+      <div id="titleDiv">
+        <h1 id="title">MembraScope</h1>
+        <p id="subtitle"><b>An emergent membrane simulator</b></p>
+        <label id="author">By Dheeraj Vudathala</label>
+      </div>
+      <div id="controls" class="open">
+        <div class="controlsHeader">
+          <span class="headerText">Controls</span>
+          <button id="toggleControls">⮜</button>
+        </div>
+
+        <div class="controlsContent">
+          <label>
+            LIPID_LENGTH
+            <input
+              type="range"
+              min="1"
+              max="20"
+              step="1"
+              value="5"
+              oninput="LIPID_LENGTH = parseFloat(this.value); LIPID_LENGTH_VAL.textContent = this.value;"
+            />
+            <span id="LIPID_LENGTH_VAL">5</span> </label
+          ><br />
+
+          <label>
+            TAIL_FORCE
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.01"
+              value="0.05"
+              oninput="TAIL_FORCE = parseFloat(this.value); TAIL_FORCE_VAL.textContent = this.value;"
+            />
+            <span id="TAIL_FORCE_VAL">0.05</span> </label
+          ><br />
+
+          <label>
+            TAIL_RANGE
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="1"
+              value="10"
+              oninput="TAIL_RANGE = parseFloat(this.value); TAIL_RANGE_VAL.textContent = this.value;"
+            />
+            <span id="TAIL_RANGE_VAL">10</span> </label
+          ><br />
+
+          <label>
+            TAIL_WATER
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.01"
+              value="1.75"
+              oninput="TAIL_WATER = parseFloat(this.value); TAIL_WATER_VAL.textContent = this.value;"
+            />
+            <span id="TAIL_WATER_VAL">1.75</span> </label
+          ><br />
+
+          <label>
+            TAIL_WATER_RANGE
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="1"
+              value="35"
+              oninput="TAIL_WATER_RANGE = parseFloat(this.value); TAIL_WATER_RANGE_VAL.textContent = this.value;"
+            />
+            <span id="TAIL_WATER_RANGE_VAL">35</span> </label
+          ><br />
+
+          <label>
+            HEAD_WATER
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.01"
+              value="0.8"
+              oninput="HEAD_WATER = parseFloat(this.value); HEAD_WATER_VAL.textContent = this.value;"
+            />
+            <span id="HEAD_WATER_VAL">0.8</span> </label
+          ><br />
+
+          <label>
+            HEAD_WATER_RANGE
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="1"
+              value="35"
+              oninput="HEAD_WATER_RANGE = parseFloat(this.value); HEAD_WATER_RANGE_VAL.textContent = this.value;"
+            />
+            <span id="HEAD_WATER_RANGE_VAL">35</span> </label
+          ><br />
+
+          <label>
+            REPULSION_FORCE
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.01"
+              value="0.5"
+              oninput="REPULSION_FORCE = parseFloat(this.value); REPULSION_FORCE_VAL.textContent = this.value;"
+            />
+            <span id="REPULSION_FORCE_VAL">0.5</span> </label
+          ><br />
+
+          <label>
+            REPULSION_RANGE
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="1"
+              value="35"
+              oninput="REPULSION_RANGE = parseFloat(this.value); REPULSION_RANGE_VAL.textContent = this.value;"
+            />
+            <span id="REPULSION_RANGE_VAL">35</span> </label
+          ><br />
+
+          <label>
+            HEAD_REPULSION_FORCE
+            <input
+              type="range"
+              min="-5"
+              max="5"
+              step="0.01"
+              value="2"
+              oninput="HEAD_REPULSION_FORCE = parseFloat(this.value); HEAD_REPULSION_FORCE_VAL.textContent = this.value;"
+            />
+            <span id="HEAD_REPULSION_FORCE_VAL">2</span> </label
+          ><br />
+
+          <label>
+            DAMPING
+            <input
+              type="range"
+              min="0.5"
+              max="1"
+              step="0.01"
+              value="0.8"
+              oninput="DAMPING = parseFloat(this.value); DAMPING_VAL.textContent = this.value;"
+            />
+            <span id="DAMPING_VAL">0.8</span> </label
+          ><br />
+
+          <label>
+            ANGULAR_DAMPING
+            <input
+              type="range"
+              min="0.5"
+              max="1"
+              step="0.01"
+              value="0.9"
+              oninput="ANGULAR_DAMPING = parseFloat(this.value); ANGULAR_DAMPING_VAL.textContent = this.value;"
+            />
+            <span id="ANGULAR_DAMPING_VAL">0.9</span> </label
+          ><br />
+
+          <label>
+            MAX_SPEED
+            <input
+              type="range"
+              min="0.1"
+              max="5"
+              step="0.1"
+              value="2"
+              oninput="MAX_SPEED = parseFloat(this.value); MAX_SPEED_VAL.textContent = this.value;"
+            />
+            <span id="MAX_SPEED_VAL">2</span> </label
+          ><br />
+
+          <label>
+            ALIGN_FORCE
+            <input
+              type="range"
+              min="0"
+              max="0.01"
+              step="0.0001"
+              value="0.0001"
+              oninput="ALIGN_FORCE = parseFloat(this.value); ALIGN_FORCE_VAL.textContent = this.value;"
+            />
+            <span id="ALIGN_FORCE_VAL">0.0001</span> </label
+          ><br />
+
+          <label>
+            NUM_WATER
+            <input
+              type="range"
+              min="0"
+              max="10000"
+              step="100"
+              value="5000"
+              oninput="NUM_WATER = parseFloat(this.value); NUM_WATER_VAL.textContent = this.value;"
+            />
+            <span id="NUM_WATER_VAL">5000</span> </label
+          ><br />
+
+          <label>
+            WATER_REPULSION_FORCE
+            <input
+              type="range"
+              min="0"
+              max="10"
+              step="0.1"
+              value="5"
+              oninput="WATER_REPULSION_FORCE = parseFloat(this.value); WATER_REPULSION_FORCE_VAL.textContent = this.value;"
+            />
+            <span id="WATER_REPULSION_FORCE_VAL">5</span> </label
+          ><br />
+
+          <label>
+            WATER_REPULSION_RANGE
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="1"
+              value="15"
+              oninput="WATER_REPULSION_RANGE = parseFloat(this.value); WATER_REPULSION_RANGE_VAL.textContent = this.value;"
+            />
+            <span id="WATER_REPULSION_RANGE_VAL">15</span>
+          </label>
+        </div>
+      </div>
+      <div id="drawControls">
+        <div class="control-group">
+          <p>Draw Mode</p>
+          <button class="active" onclick="setDrawMode('lipid')">
+            Phospholipid
+          </button>
+          <button onclick="setDrawMode('aquaporin')">Aquaporin</button>
+          <button onclick="setDrawMode('water')">Water</button>
+          <button onclick="setDrawMode('sodium')">Sodium</button>
+        </div>
+      </div>
+      <div id="infoPanel">
+        <label> <input type="checkbox" id="showForces" /> Show forces </label>
+        <p>Lipid count: <span id="count"></span></p>
+        <p>FPS: <span id="fps"></span></p>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+    <script src="grid.js"></script>
+    <script src="lipid.js"></script>
+    <script src="water.js"></script>
+    <script src="sodium.js"></script>
+    <script src="aquaporin.js"></script>
+    <script src="molecules.js"></script>
+    <script src="forces.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
