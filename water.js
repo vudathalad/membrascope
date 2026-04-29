@@ -9,6 +9,7 @@ function setupWater() {
       ),
       hydrating: false,
       nearSodium: false,
+      inAq: false,
     });
   }
 }
@@ -26,6 +27,7 @@ function updateWater() {
         ),
         hydrating: false,
         nearSodium: false,
+        inAq: false,
       });
     }
   } else if (waterParticles.length > NUM_WATER) {
@@ -36,8 +38,11 @@ function updateWater() {
   const H = height;
 
   for (let w of waterParticles) {
-    w.vel.x += (Math.random() - 0.5) * 3;
-    w.vel.y += (Math.random() - 0.5) * 3;
+    if (!w.inAq) {
+      w.vel.x += (Math.random() - 0.5) * 3;
+      w.vel.y += (Math.random() - 0.5) * 3;
+      w.directionInAq = null;
+    }
     w.vel.x *= ANGULAR_DAMPING;
     w.vel.y *= ANGULAR_DAMPING;
     w.pos.x += w.vel.x;
@@ -122,13 +127,11 @@ function drawWater() {
         b = 0; // green
       } else {
         // only check aquaporins if needed
-        for (let aq of aquaporins) {
-          if (isWaterInsideAquaporin(aq, w)) {
-            r = 255;
-            g = 0;
-            b = 0; // red
-            break;
-          }
+        if (w.inAq) {
+          r = 255;
+          g = 0;
+          b = 0; // red
+          break;
         }
       }
     }
