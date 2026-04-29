@@ -32,6 +32,12 @@ let sodiumParticles = [];
 let drawMode = 'lipid';
 let shiftDown = false;
 let hoverDraw;
+let transportCount = 0;
+let netFlow = 0;
+let transportRate = 0;
+let lastTime = 0;
+let lastTransportCount = 0;
+let dataLog = [];
 
 // --- PERF: Pre-allocate reusable vectors for hot-path math to avoid
 // creating new p5.Vector objects every frame (major GC pressure source).
@@ -45,7 +51,11 @@ checkbox.addEventListener('change', () => {
   showForces = checkbox.checked;
 });
 
-let fps = document.getElementById('fps');
+const fps = document.getElementById('fps');
+const frameCountSpan = document.getElementById('frameCount');
+const transportCountSpan = document.getElementById('transportCount');
+const netFlowSpan = document.getElementById('netFlow');
+const rateSpan = document.getElementById('rate');
 
 const controls = document.getElementById('controls');
 const toggleBtn = document.getElementById('toggleControls');
@@ -58,20 +68,24 @@ function setup() {
   let canvas = createCanvas(window.innerWidth, window.innerHeight);
   canvas.parent('simContainer');
 
-  /*for (let i = 0; i < width / 5; i++) {
-    let lipid = new Lipid(i * 5, height / 2 - 5);
-    lipid.angle = radians(270);
+  let aquaporin = new Aquaporin(width / 2, height / 2);
+  aquaporin.angle = radians(270);
+  aquaporins.push(aquaporin);
+
+  for (let i = 0; i < height / 5; i++) {
+    let lipid = new Lipid(width / 2 - 5, i * 5);
+    lipid.angle = radians(180);
     lipids.push(lipid);
     count.innerText = lipids.length;
   }
-  for (let i = 0; i < width / 5; i++) {
-    let lipid = new Lipid(i * 5, height / 2 + 5);
-    lipid.angle = radians(90);
+  for (let i = 0; i < height / 5; i++) {
+    let lipid = new Lipid(width / 2 + 5, i * 5);
+    lipid.angle = radians(0);
     lipids.push(lipid);
     count.innerText = lipids.length;
-  }*/
+  }
 
-  const r = height * 0.2;
+  /*const r = height * 0.2;
   const bilayerCount = 200;
   for (let j = -1; j <= 1; j += 2) {
     console.log(j);
@@ -91,7 +105,7 @@ function setup() {
       innerLipid.angle = angle - Math.PI;
       lipids.push(innerLipid);
     }
-  }
+  }*/
 
   count.innerText = lipids.length;
   setupWater();
@@ -99,7 +113,35 @@ function setup() {
 
 function draw() {
   background(220, 220, 220);
+
+  let now = frameCount - 50;
+
+  if (now - lastTime === 50) {
+    const delta = transportCount - lastTransportCount;
+    transportRate = delta * 2;
+
+    lastTransportCount = transportCount;
+    lastTime = now;
+
+    // 🔥 LOG DATA HERE
+    dataLog.push({
+      time: now,
+      transportCount,
+      netFlow,
+      transportRate,
+    });
+  }
+
+  console.log(dataLog);
+  console.log(lastTime);
+
+  if (frameCount - 50 === 2500) downloadCSV();
+
+  transportCountSpan.innerText = transportCount;
+  netFlowSpan.innerText = netFlow;
+  rateSpan.innerText = Math.round(transportRate);
   fps.innerText = Math.round(frameRate());
+  frameCountSpan.innerText = frameCount;
 
   // --- PERF: Clear Map is faster than assigning a new object each frame,
   // as it reuses the internal hash table memory.
@@ -194,4 +236,22 @@ function isMouseOverUI() {
     }
   }
   return true; // mouse is over canvas
+}
+
+function downloadCSV() {
+  let csv = 'time,transportCount,netFlow,transportRate\n';
+
+  for (let row of dataLog) {
+    csv += `${row.time},${row.transportCount},${row.netFlow},${row.transportRate}\n`;
+  }
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = NUM_WATER + ' _ ' + width * height + '.csv';
+  a.click();
+
+  URL.revokeObjectURL(url);
 }
