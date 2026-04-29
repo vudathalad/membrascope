@@ -104,7 +104,7 @@ class Aquaporin {
 
   getChannelBounds() {
     return {
-      halfW: this.width * 0.18, // narrow channel
+      halfW: this.width * 0.3, // narrow channel
       halfH: this.height * 0.5, // full height
     };
   }
@@ -181,6 +181,25 @@ function handleAquaporinChannel(aq, w) {
   let localX = dx * ca + dy * sa;
   let localY = -dx * sa + dy * ca;
 
+  if (!w.inAq && isWaterInsideAquaporin(aq, w)) {
+    w.inAq = true;
+
+    w.entrySide = Math.sign(localY); // +1 or -1
+  }
+
+  if (w.inAq && !isWaterInsideAquaporin(aq, w)) {
+    const exitSide = Math.sign(localY);
+
+    if (exitSide === -w.entrySide) {
+      transportCount++;
+      netFlow += exitSide;
+    }
+
+    // reset state
+    w.inAq = false;
+    w.entrySide = null;
+  }
+
   const { halfW, halfH } = aq.getChannelBounds();
 
   let damping = 0.8;
@@ -215,23 +234,8 @@ function handleAquaporinChannel(aq, w) {
     return;
   }
 
-  let collided = false;
-
-  // --- LEFT WALL
-  if (localX < -halfW + 3) {
-    localX = -halfW + 3; // ✅ minimal correction
-    localVX = 0;
-
-    collided = true;
-  }
-
-  // --- RIGHT WALL
-  if (localX > halfW - 3) {
-    localX = halfW - 3; // ✅ minimal correction
-    localVX = 0;
-
-    collided = true;
-  }
+  localX = 0;
+  localVX = 0;
 
   if (localVY < 0) {
     localVY = -6;
@@ -239,16 +243,13 @@ function handleAquaporinChannel(aq, w) {
     localVY = 6;
   }
 
-  if (collided) {
-    // Convert position back
-    w.pos.x = aq.pos.x + localX * ca + localY * -sa;
-    w.pos.y = aq.pos.y + localX * sa + localY * ca;
+  w.pos.x = aq.pos.x + localX * ca + localY * -sa;
+  w.pos.y = aq.pos.y + localX * sa + localY * ca;
 
-    // Convert velocity back
-    w.vel.x = localVX * ca + localVY * -sa;
-    w.vel.x *= damping;
+  // Convert velocity back
+  w.vel.x = localVX * ca + localVY * -sa;
+  w.vel.x *= damping;
 
-    w.vel.y = localVX * sa + localVY * ca;
-    w.vel.y *= damping;
-  }
+  w.vel.y = localVX * sa + localVY * ca;
+  w.vel.y *= damping;
 }
